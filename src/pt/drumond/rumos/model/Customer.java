@@ -155,15 +155,17 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "nif='" + nif + '\'' +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", phone='" + phone + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", email='" + email + '\'' +
-                ", profession='" + profession + '\'' +
-                ", birthDate=" + birthDate +
-                '}';
+        return  "| NIF: " + nif +
+                " | NAME: " + name +
+                " | PASSWORD: " + password +
+                " | PHONE: " + phone +
+                " | MOBILE: " + mobile +
+                " | E-MAIL: " + email +
+                " | PROFESSION: " + profession +
+                " | BIRTHDATE: " + birthDate +
+                " |";
+        /*for (int index = 0; index < customerElement.toString().length(); index++) {
+            System.out.print("-");
+        }*/
     }
 }

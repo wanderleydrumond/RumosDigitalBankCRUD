@@ -23,32 +23,31 @@ public class Bank {
         boolean flag = false;
         do {
             System.out.print("""
-                        Welcome to RUMOS DIGITAL BANK
-                                        
-                        Choose your option:
-                        0. Quit
-                        1. Insert new client
-                        2. Search client by NIF
-                        3. Update client by NIF
-                        4. Delete client by NIF
-                        5. Display all clients
-                                        
-                        Option:\040""");
+                    ╭══════════════════════$═══╮
+                         RUMOS DIGITAL BANK
+                    ╰═€════════════════════════╯
+                    Choose your option:
+                    0. Quit
+                    1. Insert new client
+                    2. Search client by NIF
+                    3. Update client by NIF
+                    4. Delete client by NIF
+                    5. Display all clients
+                                    
+                    Option:\040""");
 
-            int option = scanner.nextInt();
-            scanner.nextLine();
+            int option = Integer.parseInt(scanner.nextLine());
 
             switch (option) {
                 case 1 -> { // CREATE CUSTOMER
                     Customer customer = new Customer();
-                    boolean isValidated = false;
 
-                    insertNif(scanner, customer, isValidated);
+                    insertNif(scanner, customer, false);
                     insertName(scanner, customer);
                     insertPassword(scanner, customer);
-                    insertPhone(scanner, customer, isValidated);
-                    insertMobile(scanner, customer, isValidated);
-                    insertEmail(scanner, customer, isValidated);
+                    insertPhone(scanner, customer, false);
+                    insertMobile(scanner, customer, false);
+                    insertEmail(scanner, customer, false);
                     insertProfession(scanner, customer);
 
                     System.out.print("Insert date of birth (yyyy/MM/dd): ");
@@ -61,14 +60,27 @@ public class Bank {
                 }
 
                 case 2 -> { // SEARCH CUSTOMER
-                    System.out.print("Enter client NIF number: ");
-                    System.out.println(findByNif(scanner.nextLine(), scanner));
+                    System.out.print("Enter client NIF number or 0 to quit: ");
+                    String typedNif = scanner.nextLine();
+                    if (typedNif.equals("0")) {
+                        break;
+                    } else {
+                        Customer customer = findByNif(typedNif, scanner);
+                        if (customer != null) {
+                            displayMargin(customer);
+                            System.out.println(customer);
+                            displayMargin(customer);
+                        }
+                    }
                 }
 
                 case 3 -> { // UPDATE CUSTOMER
                     System.out.print("Insert the client NIF to be updated: ");
                     Customer customer = findByNif(scanner.nextLine(), scanner);
-                    System.out.print("""
+                    boolean flagUpdate = false;
+                    do {
+                        System.out.println(customer);
+                        System.out.print("""
                                 What do you want to update?
                                                         
                                 0. Nothing, I changed my mind
@@ -81,28 +93,53 @@ public class Bank {
                                                         
                                 Option:\040""");
 
-                    option = scanner.nextInt();
-                    scanner.nextLine();
-                    switch (option) {
-                        case 1 -> insertName(scanner, customer);
-                        case 2 -> insertPassword(scanner, customer);
-                        case 3 -> insertPhone(scanner, customer, false);
-                        case 4 -> insertMobile(scanner, customer, false);
-                        case 5 -> insertEmail(scanner, customer, false);
-                        case 6 -> insertProfession(scanner, customer);
-                        default -> {
-                            break;
+                        option = Integer.parseInt(scanner.nextLine());
+                        switch (option) {
+                            case 1 -> {
+                                insertName(scanner, customer);
+                                setAndShowCustomer(customer);
+                            }
+                            case 2 -> {
+                                insertPassword(scanner, customer);
+                                setAndShowCustomer(customer);
+                            }
+                            case 3 -> {
+                                insertPhone(scanner, customer, false);
+                                setAndShowCustomer(customer);
+                            }
+                            case 4 -> {
+                                insertMobile(scanner, customer, false);
+                                setAndShowCustomer(customer);
+                            }
+                            case 5 -> {
+                                insertEmail(scanner, customer, false);
+                                setAndShowCustomer(customer);
+                            }
+                            case 6 -> {
+                                insertProfession(scanner, customer);
+                                setAndShowCustomer(customer);
+                            }
                         }
-                    }
-                    customers.set(customers.indexOf(customer), customer);
-                    customers.forEach(System.out::println);
+                        if (option != 0) {
+                            System.out.print("Do you want update something else? (Y)es/(N)o: ");
+                            if (scanner.nextLine().equalsIgnoreCase("Y")) {
+                                flagUpdate = true;
+                            }
+                        }
+                    } while (flagUpdate && option != 0);
                 }
 
                 case 4 -> { // DELETE CUSTOMER
                     System.out.print("Insert the client NIF to be deleted: ");
                     Customer customer = findByNif(scanner.nextLine(), scanner);
-                    if (customers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()))) {
-                        System.out.println("Client successfully deleted");
+                    System.out.print(customer + "\n\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
+
+                    if (scanner.nextLine().equalsIgnoreCase("Y")) {
+                        if (customers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()))) {
+                            System.out.println("Client successfully deleted");
+                        }
+                    } else {
+                        break;
                     }
                 }
 
@@ -112,22 +149,52 @@ public class Bank {
 
                 default -> System.exit(0);
             }
-            scanner.next();
-            System.out.print("Do you want something else? (Y)es/(N)o: ");
+            System.out.print("Do you want to perform another operation? (Y)es/(N)o: ");
             if (scanner.nextLine().equalsIgnoreCase("Y")) {
                 flag = true;
             } else {
                 scanner.close();
             }
         } while (flag);
+    }
 
+    /**
+     * <ol>
+     *     <li>Sets a costumer attribute inside the customers list.</li>
+     *     <li>Displays all customers for the list.</li>
+     * </ol>
+     *
+     * @param customer object that contains all parameters that will be updated
+     */
+    private void setAndShowCustomer(Customer customer) {
+        customers.set(customers.indexOf(customer), customer);
+        customers.forEach(customerElement -> {
+            if (customerElement.getNif().equals(customer.getNif())) {
+                displayMargin(customerElement);
+                System.out.println(customerElement);
+                displayMargin(customerElement);
+            }
+        });
+    }
+
+    /**
+     * Displays a sequence of hyphens in the <code>Object.toString()</code> length.
+     * Implies calling in the begining and in the end.
+     *
+     * @param customerElement object that will be made <code>toString().length()</code>
+     */
+    private void displayMargin(Customer customerElement) {
+        for (int index = 0; index < customerElement.toString().length(); index++) {
+            System.out.print("-");
+        }
+        System.out.println();
     }
 
     /**
      * Fills the NIF field.
      *
-     * @param scanner field to be filled
-     * @param customer object that contains the attribute NIF to be inserted
+     * @param scanner     field to be filled
+     * @param customer    object that contains the attribute NIF to be inserted
      * @param isValidated flag that controns if the NIF is set or not
      */
     private void insertNif(Scanner scanner, Customer customer, boolean isValidated) {
@@ -141,8 +208,8 @@ public class Bank {
     /**
      * Fills the Phone field.
      *
-     * @param scanner field to be filled
-     * @param customer object that contains the attribute phone to be inserted
+     * @param scanner     field to be filled
+     * @param customer    object that contains the attribute phone to be inserted
      * @param isValidated flag that controns if the phone is set or not
      */
     private void insertPhone(Scanner scanner, Customer customer, boolean isValidated) {
@@ -155,7 +222,7 @@ public class Bank {
     /**
      * Fills the password field.
      *
-     * @param scanner field to be filled
+     * @param scanner  field to be filled
      * @param customer object that contains the attribute password to be inserted
      */
     private void insertPassword(Scanner scanner, Customer customer) {
@@ -166,7 +233,7 @@ public class Bank {
     /**
      * Fills the name field.
      *
-     * @param scanner field to be filled
+     * @param scanner  field to be filled
      * @param customer object that contains the attribute name to be inserted
      */
     private void insertName(Scanner scanner, Customer customer) {
@@ -177,7 +244,7 @@ public class Bank {
     /**
      * Fills the profession field.
      *
-     * @param scanner field to be filled
+     * @param scanner  field to be filled
      * @param customer object that contains the attribute profession to be inserted
      */
     private void insertProfession(Scanner scanner, Customer customer) {
@@ -189,8 +256,8 @@ public class Bank {
     /**
      * Fills the email field.
      *
-     * @param scanner field to be filled
-     * @param customer object that contains the attribute email to be inserted
+     * @param scanner     field to be filled
+     * @param customer    object that contains the attribute email to be inserted
      * @param isValidated flag that controns if the email is set or not
      */
     private void insertEmail(Scanner scanner, Customer customer, boolean isValidated) {
@@ -204,8 +271,8 @@ public class Bank {
     /**
      * Fills the mobile field.
      *
-     * @param scanner field to be filled
-     * @param customer object that contains the attribute mobile to be inserted
+     * @param scanner     field to be filled
+     * @param customer    object that contains the attribute mobile to be inserted
      * @param isValidated flag that controns if the mobile is set or not
      */
     private void insertMobile(Scanner scanner, Customer customer, boolean isValidated) {
@@ -219,7 +286,7 @@ public class Bank {
     /**
      * Finds a customer given a NIF number.
      *
-     * @param nif customer key search
+     * @param nif     customer key search
      * @param scanner field to be filled
      * @return the customer who owns that NIF number
      */
@@ -234,8 +301,11 @@ public class Bank {
                 }
             }
             if (!wasNifFound) {
-                System.out.print("Does not exist a client with the given NIF number\nEnter a valid NIF number: ");
-                typedNif = scanner.nextLine();
+                System.out.print("Does not exist a client with the given NIF number\nEnter a valid NIF or type 0 to quit: ");
+                    typedNif = scanner.nextLine();
+                if (typedNif.equals("0")) {
+                    break;
+                }
             }
         }
         return null;
@@ -245,9 +315,9 @@ public class Bank {
      * Generates initial data to fill the Arraylist that's serves as database.
      */
     public void loadDatabase() {
-        Customer customer1 = new Customer("987456321", "Jane Doe", "123456", "321654987", "99887766", "something@email.com", "Garbage man", LocalDate.of(1983, 12, 24));
-        Customer customer2 = new Customer("123456789", "John Doe", "123456", "321654987", "99887766", "something@email.com", "Garbage man", LocalDate.of(1983, 12, 24));
-        Customer customer3 = new Customer("132456789", "Rosalvo Doe", "123456", "321654987", "99887766", "something@email.com", "Garbage man", LocalDate.of(1983, 12, 24));
+        Customer customer1 = new Customer("987456321", "Jane Doe", "123456", "321654987", "99885544", "someone@email.com", "Lawyer", LocalDate.of(1983, 2, 24));
+        Customer customer2 = new Customer("123456789", "John Doe", "654321", "321644481", "99221166", "anything@email.com", "Pilot", LocalDate.of(1973, 12, 12));
+        Customer customer3 = new Customer("132456789", "Rosalvo Doe", "123654", "325554937", "99887766", "something@email.com", "Firefighter", LocalDate.of(1985, 8, 2));
 
         customers.addAll(Arrays.asList(customer1, customer2, customer3));
     }
