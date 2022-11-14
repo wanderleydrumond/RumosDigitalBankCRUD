@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * Application controller class.
+ */
 public class Bank {
     private ArrayList<Customer> customers = new ArrayList<>();
 

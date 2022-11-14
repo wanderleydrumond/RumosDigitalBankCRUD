@@ -2,6 +2,9 @@ package pt.drumond.rumos.model;
 
 import java.time.LocalDate;
 
+/**
+ * Entity class Customer.
+ */
 public class Customer {
     private String nif, name, password, phone, mobile, email, profession;
     private LocalDate birthDate;

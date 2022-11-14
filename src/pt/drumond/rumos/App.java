@@ -4,6 +4,9 @@ import pt.drumond.rumos.app.Bank;
 
 import java.util.Scanner;
 
+/**
+ * Application execution class.
+ */
 public class App {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
