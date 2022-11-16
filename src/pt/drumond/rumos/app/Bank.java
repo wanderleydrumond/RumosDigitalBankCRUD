@@ -25,7 +25,7 @@ public class Bank {
             System.out.print("""
                     ╭══════════════════════$═══╮
                          RUMOS DIGITAL BANK
-                    ╰═€════════════════════════╯
+                    ╰═══€══════════════════════╯
                     Choose your option:
                     0. Quit
                     1. Insert new client
@@ -60,7 +60,7 @@ public class Bank {
                 }
 
                 case 2 -> { // SEARCH CUSTOMER
-                    System.out.print("Enter client NIF number or 0 to quit: ");
+                    System.out.print("Enter client NIF number (0 to cancel): ");
                     String typedNif = scanner.nextLine();
                     if (typedNif.equals("0")) {
                         break;
@@ -75,7 +75,7 @@ public class Bank {
                 }
 
                 case 3 -> { // UPDATE CUSTOMER
-                    System.out.print("Insert the client NIF to be updated: ");
+                    System.out.print("Insert the client NIF to be updated (0 to cancel): ");
                     Customer customer = findByNif(scanner.nextLine(), scanner);
                     boolean flagUpdate = false;
                     do {
@@ -130,7 +130,7 @@ public class Bank {
                 }
 
                 case 4 -> { // DELETE CUSTOMER
-                    System.out.print("Insert the client NIF to be deleted: ");
+                    System.out.print("Insert the client NIF to be deleted (0 to cancel): ");
                     Customer customer = findByNif(scanner.nextLine(), scanner);
                     System.out.print(customer + "\n\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
 
@@ -199,9 +199,13 @@ public class Bank {
      */
     private void insertNif(Scanner scanner, Customer customer, boolean isValidated) {
         while (!isValidated) {
-            System.out.print("Insert nif: ");
+            System.out.print("Insert nif (0 to cancel): ");
             String nif = scanner.nextLine();
-            isValidated = customer.setNif(nif);
+            if (nif.equals("0")) {
+                run(scanner);
+            } else {
+                isValidated = customer.setNif(nif);
+            }
         }
     }
 
@@ -214,8 +218,13 @@ public class Bank {
      */
     private void insertPhone(Scanner scanner, Customer customer, boolean isValidated) {
         while (!isValidated) {
-            System.out.print("Insert phone number: ");
-            isValidated = customer.setPhone(scanner.nextLine());
+            System.out.print("Insert phone number (0 to cancel): ");
+            String phone = scanner.nextLine();
+            if (phone.equals("0")) {
+                run(scanner);
+            } else {
+                isValidated = customer.setPhone(phone);
+            }
         }
     }
 
@@ -226,8 +235,13 @@ public class Bank {
      * @param customer object that contains the attribute password to be inserted
      */
     private void insertPassword(Scanner scanner, Customer customer) {
-        System.out.print("Insert password: ");
-        customer.setPassword(scanner.nextLine());
+        System.out.print("Insert password (0 to cancel): ");
+        String password = scanner.nextLine();
+        if (password.equals("0")) {
+            run(scanner);
+        } else {
+            customer.setPassword(password);
+        }
     }
 
     /**
@@ -237,8 +251,13 @@ public class Bank {
      * @param customer object that contains the attribute name to be inserted
      */
     private void insertName(Scanner scanner, Customer customer) {
-        System.out.print("Insert name: ");
-        customer.setName(scanner.nextLine());
+        System.out.print("Insert name (0 to cancel): ");
+        String name = scanner.nextLine();
+        if (name.equals("0")) {
+            run(scanner);
+        } else {
+            customer.setName(name);
+        }
     }
 
     /**
@@ -248,9 +267,13 @@ public class Bank {
      * @param customer object that contains the attribute profession to be inserted
      */
     private void insertProfession(Scanner scanner, Customer customer) {
-        System.out.print("Insert profession: ");
+        System.out.print("Insert profession (0 to cancel): ");
         String profession = scanner.nextLine();
-        customer.setProfession(profession);
+        if (profession.equals("0")) {
+            run(scanner);
+        } else {
+            customer.setProfession(profession);
+        }
     }
 
     /**
@@ -262,9 +285,13 @@ public class Bank {
      */
     private void insertEmail(Scanner scanner, Customer customer, boolean isValidated) {
         while (!isValidated) {
-            System.out.print("Insert email: ");
+            System.out.print("Insert email (0 to cancel): ");
             String email = scanner.nextLine();
-            isValidated = customer.setEmail(email);
+            if (email.equals("0")) {
+                run(scanner);
+            } else {
+                isValidated = customer.setEmail(email);
+            }
         }
     }
 
@@ -277,9 +304,13 @@ public class Bank {
      */
     private void insertMobile(Scanner scanner, Customer customer, boolean isValidated) {
         while (!isValidated) {
-            System.out.print("Insert mobile number: ");
+            System.out.print("Insert mobile number (0 to cancel): ");
             String mobile = scanner.nextLine();
-            isValidated = customer.setMobile(mobile);
+            if (mobile.equals("0")) {
+                run(scanner);
+            } else {
+                isValidated = customer.setMobile(mobile);
+            }
         }
     }
 

@@ -39,7 +39,7 @@ public class Customer {
      * </ul>
      */
     public boolean setNif(String nif) {
-        if (nif.matches("^(?:[1-9])[0-9]{9}$")) {
+        if (nif.matches("^(?:[1-9])[0-9]{8}$")) {
             this.nif = nif;
         } else {
             System.out.println("Invalid nif number");
@@ -164,8 +164,5 @@ public class Customer {
                 " | PROFESSION: " + profession +
                 " | BIRTHDATE: " + birthDate +
                 " |";
-        /*for (int index = 0; index < customerElement.toString().length(); index++) {
-            System.out.print("-");
-        }*/
     }
 }
