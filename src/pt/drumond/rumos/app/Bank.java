@@ -49,10 +49,7 @@ public class Bank {
                     insertMobile(scanner, customer, false);
                     insertEmail(scanner, customer, false);
                     insertProfession(scanner, customer);
-
-                    System.out.print("Insert date of birth (yyyy/MM/dd): ");
-                    String birthDate = scanner.nextLine();
-                    customer.setBirthDate(LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+                    insertBirthDate(scanner, customer);
 
                     customers.add(customer);
                     System.out.println("Client successfully created");
@@ -157,7 +154,6 @@ public class Bank {
             }
         } while (flag);
     }
-
     /**
      * <ol>
      *     <li>Sets a costumer attribute inside the customers list.</li>
@@ -315,6 +311,23 @@ public class Bank {
     }
 
     /**
+     * Fills the birthDate field.
+     *
+     * @param scanner  field to be filled
+     * @param customer object that contains the attribute mobile to be inserted
+     */
+    private void insertBirthDate(Scanner scanner, Customer customer) {
+        System.out.print("Insert date of birth (yyyy/MM/dd) (0 to cancel): ");
+        String birthDate = scanner.nextLine();
+        if (birthDate.equals("0")) {
+            run(scanner);
+        } else {
+            customer.setBirthDate(LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+        }
+    }
+
+
+    /**
      * Finds a customer given a NIF number.
      *
      * @param nif     customer key search
@@ -349,7 +362,10 @@ public class Bank {
         Customer customer1 = new Customer("987456321", "Jane Doe", "123456", "321654987", "99885544", "someone@email.com", "Lawyer", LocalDate.of(1983, 2, 24));
         Customer customer2 = new Customer("123456789", "John Doe", "654321", "321644481", "99221166", "anything@email.com", "Pilot", LocalDate.of(1973, 12, 12));
         Customer customer3 = new Customer("132456789", "Rosalvo Doe", "123654", "325554937", "99887766", "something@email.com", "Firefighter", LocalDate.of(1985, 8, 2));
+        Customer customer4 = new Customer("369258147", "João das Couves", "526341", "222111333", "951951951", "cabbages@email.pt", "seller", LocalDate.of(1972, 1, 22));
+        Customer customer5 = new Customer("144774144", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22));
+        Customer customer6 = new Customer("144774144", "Korra", "541166", "335478852", "999258741", "water@avatar.com", "avatar", LocalDate.of(2011, 1, 22));
 
-        customers.addAll(Arrays.asList(customer1, customer2, customer3));
+        customers.addAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5, customer6));
     }
 }
