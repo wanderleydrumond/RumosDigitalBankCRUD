@@ -39,111 +39,11 @@ public class Bank {
             int option = Integer.parseInt(scanner.nextLine());
 
             switch (option) {
-                case 1 -> { // CREATE CUSTOMER
-                    Customer customer = new Customer();
-
-                    insertNif(scanner, customer, false);
-                    insertName(scanner, customer);
-                    insertPassword(scanner, customer);
-                    insertPhone(scanner, customer, false);
-                    insertMobile(scanner, customer, false);
-                    insertEmail(scanner, customer, false);
-                    insertProfession(scanner, customer);
-                    insertBirthDate(scanner, customer);
-
-                    customers.add(customer);
-                    System.out.println("Client successfully created");
-                    customers.forEach(System.out::println);
-                }
-
-                case 2 -> { // SEARCH CUSTOMER
-                    System.out.print("Enter client NIF number (0 to cancel): ");
-                    String typedNif = scanner.nextLine();
-                    if (typedNif.equals("0")) {
-                        break;
-                    } else {
-                        Customer customer = findByNif(typedNif, scanner);
-                        if (customer != null) {
-                            displayMargin(customer);
-                            System.out.println(customer);
-                            displayMargin(customer);
-                        }
-                    }
-                }
-
-                case 3 -> { // UPDATE CUSTOMER
-                    System.out.print("Insert the client NIF to be updated (0 to cancel): ");
-                    Customer customer = findByNif(scanner.nextLine(), scanner);
-                    boolean flagUpdate = false;
-                    do {
-                        System.out.println(customer);
-                        System.out.print("""
-                                What do you want to update?
-                                                        
-                                0. Nothing, I changed my mind
-                                1. Name
-                                2. Password
-                                3. Phone number
-                                4. Mobile number
-                                5. e-mail
-                                6. Profession
-                                                        
-                                Option:\040""");
-
-                        option = Integer.parseInt(scanner.nextLine());
-                        switch (option) {
-                            case 1 -> {
-                                insertName(scanner, customer);
-                                setAndShowCustomer(customer);
-                            }
-                            case 2 -> {
-                                insertPassword(scanner, customer);
-                                setAndShowCustomer(customer);
-                            }
-                            case 3 -> {
-                                insertPhone(scanner, customer, false);
-                                setAndShowCustomer(customer);
-                            }
-                            case 4 -> {
-                                insertMobile(scanner, customer, false);
-                                setAndShowCustomer(customer);
-                            }
-                            case 5 -> {
-                                insertEmail(scanner, customer, false);
-                                setAndShowCustomer(customer);
-                            }
-                            case 6 -> {
-                                insertProfession(scanner, customer);
-                                setAndShowCustomer(customer);
-                            }
-                        }
-                        if (option != 0) {
-                            System.out.print("Do you want update something else? (Y)es/(N)o: ");
-                            if (scanner.nextLine().equalsIgnoreCase("Y")) {
-                                flagUpdate = true;
-                            }
-                        }
-                    } while (flagUpdate && option != 0);
-                }
-
-                case 4 -> { // DELETE CUSTOMER
-                    System.out.print("Insert the client NIF to be deleted (0 to cancel): ");
-                    Customer customer = findByNif(scanner.nextLine(), scanner);
-                    System.out.print(customer + "\n\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
-
-                    if (scanner.nextLine().equalsIgnoreCase("Y")) {
-                        if (customers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()))) {
-                            System.out.println("Client successfully deleted");
-                        }
-                    } else {
-                        break;
-                    }
-                }
-
-                case 5 -> { // DISPLAY ALL CUSTOMERS
-                    customers.forEach(System.out::println);
-                }
-
+                case 1 -> createCustomer(scanner);
+                case 2 -> findCustomerByNif(scanner);
+                case 3 -> updateCustomer(scanner);
+                case 4 -> deleteCustomer(scanner);
+                case 5 -> findAllCustomers();
                 default -> System.exit(0);
             }
             System.out.print("Do you want to perform another operation? (Y)es/(N)o: ");
@@ -154,6 +54,153 @@ public class Bank {
             }
         } while (flag);
     }
+
+    /**
+     * Creates a new customer.<br>
+     * <em>Allows returning to main menu typing 0</em>
+     * <ol>
+     *     <li>Instiates a new customer object.</li>
+     *     <li>Calls the methods to fill each field.</li>
+     *     <li>Adds it to to database (Arraylist)</li>
+     *     <li>Displays success message</li>
+     *     <li>Displays the inserted customer inside the database formatted</li>
+     * </ol>
+     *
+     * @param scanner field to be filled inside each iner method.
+     */
+    private void createCustomer(Scanner scanner) {
+        Customer customer = new Customer();
+
+        insertNif(scanner, customer, false);
+        insertName(scanner, customer);
+        insertPassword(scanner, customer);
+        insertPhone(scanner, customer, false);
+        insertMobile(scanner, customer, false);
+        insertEmail(scanner, customer, false);
+        insertProfession(scanner, customer);
+        insertBirthDate(scanner, customer);
+
+        customers.add(customer);
+        System.out.println("Client successfully created");
+        displayMargin(customer);
+        customers.forEach(customerElement -> {
+            if (customerElement.getNif().equals(customer.getNif())){
+                System.out.println(customer);
+            }
+        });
+        displayMargin(customer);
+    }
+
+    /**
+     * Finds a customer with a given NIF number. <br>
+     * <em>Allows returning to main menu typing 0</em>
+     *
+     * @param scanner field to be filled with the NIF number
+     */
+    private void findCustomerByNif(Scanner scanner) {
+        System.out.print("Enter client NIF number (0 to cancel): ");
+        String typedNif = scanner.nextLine();
+        if (typedNif.equals("0")) {
+            return;
+        } else {
+            Customer customer = findByNif(typedNif, scanner);
+            if (customer != null) {
+                displayMargin(customer);
+                System.out.println(customer);
+                displayMargin(customer);
+            }
+        }
+    }
+
+    /**
+     * Updates a customer with a given NIF number.<br>
+     * <em>Allows returning to main menu typing 0</em>
+     *
+     * @param scanner field to be filled with the NIF number
+     */
+    private void updateCustomer(Scanner scanner) {
+        int option;
+        System.out.print("Insert the client NIF to be updated (0 to cancel): ");
+        Customer customer = findByNif(scanner.nextLine(), scanner);
+        boolean flagUpdate = false;
+        do {
+            System.out.println(customer);
+            System.out.print("""
+                    What do you want to update?
+                                            
+                    0. Nothing, I changed my mind
+                    1. Name
+                    2. Password
+                    3. Phone number
+                    4. Mobile number
+                    5. e-mail
+                    6. Profession
+                                            
+                    Option:\040""");
+
+            option = Integer.parseInt(scanner.nextLine());
+            switch (option) {
+                case 1 -> {
+                    insertName(scanner, customer);
+                    setAndShowCustomer(customer);
+                }
+                case 2 -> {
+                    insertPassword(scanner, customer);
+                    setAndShowCustomer(customer);
+                }
+                case 3 -> {
+                    insertPhone(scanner, customer, false);
+                    setAndShowCustomer(customer);
+                }
+                case 4 -> {
+                    insertMobile(scanner, customer, false);
+                    setAndShowCustomer(customer);
+                }
+                case 5 -> {
+                    insertEmail(scanner, customer, false);
+                    setAndShowCustomer(customer);
+                }
+                case 6 -> {
+                    insertProfession(scanner, customer);
+                    setAndShowCustomer(customer);
+                }
+            }
+            if (option != 0) {
+                System.out.print("Do you want update something else? (Y)es/(N)o: ");
+                if (scanner.nextLine().equalsIgnoreCase("Y")) {
+                    flagUpdate = true;
+                }
+            }
+        } while (flagUpdate && option != 0);
+    }
+
+    /**
+     * Deletes a customer with a given NIF number.<br>
+     * <em>Allows returning to main menu typing 0</em>
+     *
+     * @param scanner  field to be filled with the NIF number
+     */
+    private void deleteCustomer(Scanner scanner) {
+        System.out.print("Insert the client NIF to be deleted (0 to cancel): ");
+        Customer customer = findByNif(scanner.nextLine(), scanner);
+        System.out.print(customer + "\n\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
+
+        if (scanner.nextLine().equalsIgnoreCase("Y")) {
+            if (customers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()))) {
+                System.out.println("Client successfully deleted");
+            }
+        } else {
+            return;
+        }
+    }
+
+    /**
+     * Displays all customers.
+     */
+    private void findAllCustomers() {
+        customers.forEach(System.out::println);
+    }
+
     /**
      * <ol>
      *     <li>Sets a costumer attribute inside the customers list.</li>
